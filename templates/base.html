@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Storage Health Dashboard</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+  <h1>Storage Health Dashboard</h1>
+  <span class="mode {{ 'live' if live_mode else 'demo' }}">{{ 'LIVE' if live_mode else 'DEMO' }}</span>
+</header>
+<main>{% block content %}{% endblock %}</main>
+<footer>Storage Health Dashboard — demo data unless LIVE_MODE=true</footer>
+</body>
+</html>

@@ -1,0 +1,39 @@
+:root { --bg:#0f1419; --card:#1a222c; --text:#d7dee8; --muted:#8b98a9;
+        --ok:#3fb950; --warn:#d29922; --crit:#f85149; --accent:#58a6ff; }
+* { box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:system-ui,sans-serif;
+       margin:0; padding:0 1.5rem 3rem; }
+header { display:flex; align-items:center; gap:1rem; padding:1.2rem 0;
+         border-bottom:1px solid #2a3441; }
+header h1 { margin:0; font-size:1.4rem; }
+.mode { font-size:.75rem; font-weight:700; padding:.25rem .6rem; border-radius:4px; }
+.mode.demo { background:#3a2f10; color:var(--warn); }
+.mode.live { background:#0f2f1a; color:var(--ok); }
+section { margin-top:2rem; }
+h2 { font-size:1.05rem; color:var(--muted); text-transform:uppercase;
+     letter-spacing:.05em; }
+.score-card { display:flex; align-items:center; gap:2rem; background:var(--card);
+              border-radius:8px; padding:1.5rem; margin-top:1.5rem; }
+.score-ring { width:90px; height:90px; border-radius:50%; display:flex;
+              align-items:center; justify-content:center; font-size:1.8rem;
+              font-weight:700; border:6px solid var(--accent); }
+.score-breakdown { display:flex; gap:1.2rem; flex-wrap:wrap; color:var(--muted); }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+        gap:1rem; }
+.card { background:var(--card); border-radius:8px; padding:1rem;
+        border-left:4px solid var(--ok); }
+.card.warning { border-left-color:var(--warn); }
+.card.critical { border-left-color:var(--crit); }
+.card h3 { margin:.2rem 0; font-size:1rem; }
+.platform { color:var(--muted); font-size:.8rem; margin:.2rem 0 .6rem; }
+.bar { background:#2a3441; border-radius:4px; height:10px; overflow:hidden; }
+.fill { background:var(--accent); height:100%; }
+.card.warning .fill { background:var(--warn); }
+.card.critical .fill { background:var(--crit); }
+table { width:100%; border-collapse:collapse; background:var(--card);
+        border-radius:8px; overflow:hidden; font-size:.9rem; }
+th, td { text-align:left; padding:.6rem .8rem; border-bottom:1px solid #2a3441; }
+th { color:var(--muted); font-weight:600; font-size:.78rem;
+     text-transform:uppercase; letter-spacing:.04em; }
+tr.warn td { color:var(--warn); }
+footer { margin-top:3rem; color:var(--muted); font-size:.8rem; text-align:center; }

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="score-card">
+  <div class="score-ring">{{ score.total }}</div>
+  <div class="score-breakdown">
+    <span>Capacity {{ score.capacity }}</span>
+    <span>Snapshots {{ score.snapshots }}</span>
+    <span>S3 {{ score.s3 }}</span>
+    <span>Zoning {{ score.zoning }}</span>
+  </div>
+</section>
+
+<section>
+  <h2>Capacity by Pool</h2>
+  <div class="grid">
+  {% for p in pools %}
+    <div class="card {{ p.status }}">
+      <h3>{{ p.name }}</h3>
+      <p class="platform">{{ p.platform }}</p>
+      <div class="bar"><div class="fill" style="width:{{ p.used_pct }}%"></div></div>
+      <p>{{ p.used_tb }} / {{ p.total_tb }} TB ({{ p.used_pct }}%)</p>
+    </div>
+  {% endfor %}
+  </div>
+</section>
+
+<section>
+  <h2>Volumes Nearing Full ({{ volumes|length }} tracked)</h2>
+  <table>
+    <tr><th>Volume</th><th>Platform</th><th>Size</th><th>Used</th></tr>
+    {% for v in volumes|sort(attribute='used_pct', reverse=True) %}
+    <tr class="{{ 'warn' if v.used_pct >= 85 else '' }}">
+      <td>{{ v.svm }}/{{ v.volume }}</td><td>{{ v.platform }}</td>
+      <td>{{ v.size_gb }} GB</td><td>{{ v.used_pct }}%</td>
+    </tr>
+    {% endfor %}
+  </table>
+</section>
+
+<section>
+  <h2>Snapshot Compliance ({{ stale_snaps|length }} stale)</h2>
+  <table>
+    <tr><th>Snapshot</th><th>Volume</th><th>Age</th><th>Size</th></tr>
+    {% for s in snapshots|sort(attribute='age_days', reverse=True) %}
+    <tr class="{{ 'warn' if s.age_days > 30 else '' }}">
+      <td>{{ s.snapshot }}</td><td>{{ s.svm }}/{{ s.volume }}</td>
+      <td>{{ s.age_days }}d</td><td>{{ s.size_gb }} GB</td>
+    </tr>
+    {% endfor %}
+  </table>
+</section>
+
+<section>
+  <h2>S3 Bucket Posture ({{ bad_buckets|length }} with findings)</h2>
+  <table>
+    <tr><th>Bucket</th><th>Encryption</th><th>Versioning</th><th>Public Access</th><th>Issues</th></tr>
+    {% for b in buckets %}
+    <tr class="{{ 'warn' if b.issues else '' }}">
+      <td>{{ b.bucket }}</td><td>{{ b.encryption }}</td>
+      <td>{{ b.versioning }}</td><td>{{ b.pab }}</td>
+      <td>{{ b.issues|join(', ') or '—' }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</section>
+
+<section>
+  <h2>FC Zoning ({{ bad_zones|length }} issues)</h2>
+  <table>
+    <tr><th>Zone</th><th>Members</th><th>Issues</th></tr>
+    {% for z in zones %}
+    <tr class="{{ 'warn' if z.issues else '' }}">
+      <td>{{ z.zone }}</td><td>{{ z.members }}</td>
+      <td>{{ z.issues|join(', ') or '—' }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</section>
+
+{% endblock %}
