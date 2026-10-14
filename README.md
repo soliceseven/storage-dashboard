@@ -2,8 +2,6 @@
 
 A single-pane-of-glass dashboard for enterprise storage health — capacity, snapshots, S3 posture, and FC zoning. Built to demo what a storage architect watches day to day.
 
-![dashboard](docs/screenshot.png)
-
 ## Quick start (demo mode)
 
 ```bash
