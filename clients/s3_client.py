@@ -1,11 +1,18 @@
 """
 S3-compatible live client (Cleversafe/IBM COS, Cloudian, AWS S3, MinIO).
-Returns None if not configured (caller falls back to mock).
+Returns None when live mode is off, so the caller can use mock data.
 """
 
-import os
 
 import config
+
+
+def _error_code(error):
+    response = getattr(error, "response", None)
+    if not isinstance(response, dict):
+        return None
+    details = response.get("Error")
+    return details.get("Code") if isinstance(details, dict) else None
 
 
 def get_buckets():
@@ -26,26 +33,50 @@ def get_buckets():
         try:
             s3.get_bucket_encryption(Bucket=name)
             enc = "ENABLED"
-        except Exception:
-            enc = "DISABLED"
+        except Exception as error:
+            enc = (
+                "DISABLED"
+                if _error_code(error) == "ServerSideEncryptionConfigurationNotFoundError"
+                else "UNKNOWN"
+            )
         try:
             ver = s3.get_bucket_versioning(Bucket=name).get("Status", "Suspended")
         except Exception:
             ver = "Unknown"
         try:
-            pab = s3.get_public_access_block(Bucket=name)["PublicAccessBlockConfiguration"]
-            full = all(pab.get(k) for k in ("BlockPublicAcls", "BlockPublicPolicy",
-                                            "IgnorePublicAcls", "RestrictPublicBuckets"))
+            pab = s3.get_public_access_block(Bucket=name)[
+                "PublicAccessBlockConfiguration"
+            ]
+            full = all(
+                pab.get(k)
+                for k in (
+                    "BlockPublicAcls",
+                    "BlockPublicPolicy",
+                    "IgnorePublicAcls",
+                    "RestrictPublicBuckets",
+                )
+            )
             pab_s = "FULL" if full else "PARTIAL"
-        except Exception:
-            pab_s = "NONE"
+        except Exception as error:
+            pab_s = (
+                "NONE"
+                if _error_code(error) == "NoSuchPublicAccessBlockConfiguration"
+                else "UNKNOWN"
+            )
         issues = []
         if enc == "DISABLED":
             issues.append("no-encryption")
-        if ver != "Enabled":
+        if ver == "Suspended":
             issues.append("versioning-off")
         if pab_s in ("NONE", "PARTIAL"):
             issues.append("public-access-risk")
-        out.append({"bucket": name, "encryption": enc, "versioning": ver,
-                    "pab": pab_s, "issues": issues})
+        out.append(
+            {
+                "bucket": name,
+                "encryption": enc,
+                "versioning": ver,
+                "pab": pab_s,
+                "issues": issues,
+            }
+        )
     return out
