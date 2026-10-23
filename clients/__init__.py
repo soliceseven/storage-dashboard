@@ -1,4 +1,4 @@
-"""Live API clients. Each falls back to mock data if credentials are missing."""
+"""Live API clients. Callers use mock data when a client is not configured."""
 
 from .infinidat_client import get_pools as infinidat_pools
 from .ontap_client import get_pools as ontap_pools

@@ -1,6 +1,6 @@
 """
 S3-compatible live client (Cleversafe/IBM COS, Cloudian, AWS S3, MinIO).
-Returns None if not configured (caller falls back to mock).
+Returns None when live mode is off, so the caller can use mock data.
 """
 
 

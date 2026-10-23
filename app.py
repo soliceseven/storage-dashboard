@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Storage Health Dashboard — Flask app. Demo mode by default; set LIVE_MODE=true for real APIs."""
+"""Flask app for the Storage Health Dashboard. Runs in demo mode by default; set LIVE_MODE=true to use live APIs."""
 
 import config
 import mock_data
@@ -24,13 +24,13 @@ def collect():
         lambda: (ontap_client.get_pools() or []) + (infinidat_client.get_pools() or []),
         mock_data.get_pools,
     )
-    # If live returned empty but mock has data, prefer mock for demo completeness
+    # Use mock pools if live clients return none, so the demo has complete data.
     if live_pools and not pools:
         pools, live_pools = mock_data.get_pools(), False
 
     volumes, _ = _or_mock(ontap_client.get_volumes, mock_data.get_volumes)
     buckets, live_buckets = _or_mock(s3_client.get_buckets, mock_data.get_buckets)
-    snapshots = mock_data.get_snapshots()  # snapshot live clients TBD
+    snapshots = mock_data.get_snapshots()  # Snapshots currently use mock data; no live client is available.
     zones = mock_data.get_zones()
 
     score = mock_data.health_score()

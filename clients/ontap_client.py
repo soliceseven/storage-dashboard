@@ -1,6 +1,6 @@
 """
-NetApp ONTAP live client. Returns None if not configured (caller falls back to mock).
-Shape matches mock_data.get_pools() / get_volumes().
+NetApp ONTAP live client. Returns None when not configured, so the caller can use mock data.
+Responses match mock_data.get_pools() and mock_data.get_volumes().
 """
 
 

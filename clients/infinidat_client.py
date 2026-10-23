@@ -1,5 +1,5 @@
 """
-INFINIDAT InfiniBox live client. Returns None if not configured.
+INFINIDAT InfiniBox live client. Returns None when not configured, so the caller can use mock data.
 """
 
 import config

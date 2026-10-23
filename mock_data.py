@@ -1,6 +1,6 @@
 """
-Mock data shaped like the real API responses.
-Swap in live clients by setting LIVE_MODE=true (see clients/).
+Mock data with the same shape as real API responses.
+Set LIVE_MODE=true to use the live clients in clients/.
 """
 
 from datetime import datetime, timedelta, timezone
@@ -175,7 +175,7 @@ def get_zones():
 
 
 def health_score():
-    """Weighted composite 0-100. Mirrors the scoring in app.py."""
+    """Return the weighted composite score (0-100) using app.py's calculation."""
     pools = get_pools()
     cap_scores = []
     for p in pools:
